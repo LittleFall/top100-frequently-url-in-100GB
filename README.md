@@ -1,7 +1,7 @@
 # LittleHomework
 pingcap的小作业
 
-> 题目：
+### 题目：
 >
 > 100GBurl文件，使用1GB内存计算出出现次数top100的url和出现的次数
 > 
@@ -13,14 +13,19 @@ pingcap的小作业
 >
 > 注意异常处理，尝试优化性能
 
-目录：
+### 环境：
+- 操作系统 ubuntu 18.04
+- 编辑器/同步工具 sublime_text + sublime_merge
+
+### 目录：
 - /doc 存放相关文档
 - /data_finder 用于造数据
 - /cpp 表示使用c++语言写的项目
 - /go 表示使用go语言写的项目
 - /test 测试用
 
-环境：
-操作系统 ubuntu 18.04
-编辑器/同步工具 sublime_text + sublime_merge
-
+### 数据：
+按一条url 50B估算，共有三组数据：
+1. 100KBurl(2000条)，用于调试
+2. 100MBurl(2e6条)，用于测试性能
+3. 100GBurl(2e9条)，实际数据
