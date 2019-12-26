@@ -1,8 +1,15 @@
+import requests
 import urllib
+import bs4
+from queue import Queue
+
 try:
-    url = "http://www.baidu.com"
-    f = urllib2.urlopen(url, timeout=0) #timeout设置超时的时间
-    result = f.read()
-    print result
-except Exception,e:
-    print 'a',str(e)
+	url = "http://downpack.baidu.com/baidunews_AndroidPhone_1014720b.apk"
+	req_obj = requests.get(url, timeout = 0.3)
+	bresp = bs4.BeautifulSoup(req_obj.text,'lxml')
+	hrefs = bresp.find_all(lambda tag: tag.has_attr('href'))
+	parse = urllib.parse.urlparse(url)
+except requests.exceptions.RequestException:
+	print("exception.")
+
+print("end")

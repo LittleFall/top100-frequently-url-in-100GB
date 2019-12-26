@@ -2,3 +2,5 @@
 data_finder/data100kb.txt
 data_finder/data100mb.txt
 data_finder/data100gb.txt
+solver
+cpp/main
