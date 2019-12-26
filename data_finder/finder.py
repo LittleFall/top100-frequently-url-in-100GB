@@ -1,7 +1,9 @@
 import requests
 import urllib
+import threading
 import bs4
-from queue import Queue
+import queue
+import time
 	
 # 双斜杠开头，补全协议
 # 单斜杠开头，补全协议与域名
@@ -27,34 +29,49 @@ def get_parse_and_hrefs_from_url(url):
 	except requests.exceptions.RequestException:
 		return "", {}
 
-
-def main():
-	fo = open("data100kb.txt", "w")
-
-	q = Queue() # 队列
-	q.put("https://www.baidu.com") # 初始地址
-
-	cnt, limit, checkunit = 0, 20000, 1000
-
-	while(not q.empty()):
+def worker():
+	global cnt
+	while True:
 		url = q.get()
-		# print("url =", url)
+		#print("url =", url)
 		parse, hrefs = get_parse_and_hrefs_from_url(url)
 
 		for href in hrefs:
 			string = href['href'];
 			string = complete_url(string, parse)
 			if(string.startswith("http")):
-				cnt = cnt + 1
 				fo.write(string+"\n")
-				q.put(string)
+				cnt += 1
+				if(cnt > limit):
+					return
+				if(q.qsize() < qlimit):
+					q.put(string)
+				if(cnt % 1000 == 0):
+					print(cnt)
 
-				if(cnt % checkunit == 0):
-					print(cnt, q.qsize())
-				if(cnt == limit):
-					q.queue.clear()
-					break
+
+fo = open("data100gb.txt", "w")
+q = queue.Queue() # 队列
+cnt, limit, checkunit, qlimit = 0, 1.5e7, 1000, 1000000
+
+def main():
+	time_start=time.time()
+
+	q.put("https://www.baidu.com") # 初始地址
+
+	thread_nums = 8
+	threads = []
+	for i in range(thread_nums):
+		t = threading.Thread(target = worker)
+		t.start()
+		threads.append(t)
+
+	for t in threads:
+		t.join()
+
 	fo.close()
+
+	print("time cost =", time.time() - time_start)
 
 if __name__ == '__main__':
     main()
