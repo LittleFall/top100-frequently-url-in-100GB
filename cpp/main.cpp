@@ -13,10 +13,11 @@ unsigned hash(const string &url) //获得url的hash值，范围是[0,blocks-1]
 		res = (res * radix + unsigned(ch)) % blocks;
 	return res;
 }
+std::ofstream ofs[blocks];
 void init()
 {
 	for(unsigned i=0; i<blocks; ++i)
-		std::ofstream fout(block_path + std::to_string(i));
+		ofs[i] = std::ofstream(block_path + std::to_string(i));
 }
 int main(void)
 {
@@ -28,17 +29,10 @@ int main(void)
 	while(getline(fin, url))
 	{
 		unsigned hash_val = hash(url);
-		std::ofstream fout(block_path + std::to_string(hash_val), std::ofstream::app);
-		fout << url << "\n";
+		ofs[hash_val] << url << "\n";
 		++count[hash_val];
 	}
-	// unsigned tot = 0;
-	// for(unsigned i=0; i<blocks; ++i)
-	// {
-	// 	printf("%u %u\n", i, count[i] );
-	// 	tot += count[i];
-	// }
-	// printf("%u\n",tot );
+	printf("classify cost = %.2fs\n",double(clock()-t_st)/CLOCKS_PER_SEC );
 
 	using psu = std::pair<string, unsigned>;
 	auto big_top = [](psu &a, psu &b){return a.second < b.second;};
@@ -46,13 +40,8 @@ int main(void)
 	std::vector<psu> total_heap(limit+1);
 
 	make_heap(total_heap.begin(), total_heap.end(), little_top);
-	// for(auto p:total_heap)
-	// 	printf("%d ",p.second );
-	// printf("\n");
-
 	for(unsigned i=0; i<blocks; ++i)
 	{
-		//printf("\nblock %d\n",i );
 		std::ifstream fin(block_path + std::to_string(i));
 		string url;
 		std::unordered_map<string, unsigned> counter;
@@ -74,13 +63,13 @@ int main(void)
 			heap.pop_back();
 		}
 	}
-	printf("\n");
+	//printf("\n");
 	total_heap.pop_back();
 	sort(total_heap.begin(), total_heap.end(), little_top);
-	for(auto p:total_heap)
-		printf("%d %s\n", p.second, p.first.c_str() );
-	printf("\n");
+	// for(auto p:total_heap)
+	// 	printf("%d %s\n", p.second, p.first.c_str() );
+	// printf("\n");
 
-	printf("time cost = %.2fs\n",double(clock()-t_st)/CLOCKS_PER_SEC );
+	printf("total cost = %.2fs\n",double(clock()-t_st)/CLOCKS_PER_SEC );
     return 0;
 }
