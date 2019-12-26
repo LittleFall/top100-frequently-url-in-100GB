@@ -16,6 +16,8 @@ def complete_url(candidate, parse):
 	return candidate
 
 def get_parse_and_hrefs_from_url(url):
+	if url.endswith(".apk"):
+		return "", {}
 	try:
 		req_obj = requests.get(url, timeout = 0.3)
 		bresp = bs4.BeautifulSoup(req_obj.text,'lxml')
@@ -27,16 +29,16 @@ def get_parse_and_hrefs_from_url(url):
 
 
 def main():
-	fo = open("data100mb.txt", "w")
+	fo = open("data100kb.txt", "w")
 
 	q = Queue() # 队列
 	q.put("https://www.baidu.com") # 初始地址
 
-	cnt, limit, checkunit = 0, 2000000, 1000
+	cnt, limit, checkunit = 0, 20000, 1000
 
 	while(not q.empty()):
 		url = q.get()
-		print("url =", url)
+		# print("url =", url)
 		parse, hrefs = get_parse_and_hrefs_from_url(url)
 
 		for href in hrefs:
@@ -47,7 +49,7 @@ def main():
 				fo.write(string+"\n")
 				q.put(string)
 
-				if(cnt % 10 == 0):
+				if(cnt % checkunit == 0):
 					print(cnt, q.qsize())
 				if(cnt == limit):
 					q.queue.clear()
