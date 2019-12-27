@@ -1,8 +1,5 @@
 # Specify filepatterns you want git to ignore.
-data_finder/data100kb.txt
-data_finder/data100mb.txt
-data_finder/data100gb.txt
-solver
-test
-cpp/main
-
+data/*
+src/main
+tmp/*
+test/

@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
 using std::string;
 
-const string data_path = "../data_finder/data100gb.txt";
-const string block_path = "../solver/block";
+const string data_path = "../data/data100gb.txt";
+const string block_path = "../tmp/block";
 const unsigned radix = 31, blocks = 13331, limit = 100;
 
 unsigned hash(const string &url) //获得url的hash值，范围是[0,blocks-1]

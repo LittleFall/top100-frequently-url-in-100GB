@@ -50,7 +50,7 @@ def worker():
 					print(cnt)
 
 
-fo = open("data100gb.txt", "w")
+fo = open("../data/data100kb.txt", "w")
 q = queue.Queue() 
 cnt, limit, checkunit, qlimit = 0, 1.5e9, 1000, 1000000
 
