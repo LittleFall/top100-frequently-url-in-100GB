@@ -1,28 +1,14 @@
-# LittleHomework
-pingcap的小作业
+# top100-frequently-url-in-100GB
+100GBurl文件，使用1GB内存计算出出现次数top100的url和出现的次数
 
-[TOC]
-
-### 题目：
->
-> 100GBurl文件，使用1GB内存计算出出现次数top100的url和出现的次数
-> 
-> 提示：
-> 
-> 注意代码可读性，添加必要的注释（英文）
->
-> 注意代码风格与规范，添加必要的单元测试与文档
->
-> 注意异常处理，尝试优化性能
-
-### 环境：
+### 环境
 - 操作系统 ubuntu 18.04
 - 编辑器/同步工具 sublime_text + sublime_merge
 - 编译器：
 	- Python 3.6.9
 	- g++ 7.4.0, 编译选项：-Wall -std=c++14
 
-### 目录：
+### 目录
 - /data 存放制造好的数据
 	- /data100kb.txt 约2000条，102.7KB，用于调试
 	- /data100mb.txt 约2e6条，151.5MB，用于测试正确性与性能
@@ -33,6 +19,41 @@ pingcap的小作业
 	- /main.cpp 运行主程序，根据数据产生计算结果
 - /tmp 存放中间运算结果
 
+### 算法流程
+##### 构造数据
+1. 选定一个起点url，加入队列中；
+2. 从队首取得一个url，获得网页HTML代码，遍历所有href，将合法的url加入到队列中；
+3. 当已经发现的url数量达到目标时停止，否则返回第二步；
+4. 考虑到100GB实在太大，爬到200MB左右的数据时停止，不断进行自身复制得到100GB的数据。
+
+##### 选择算法
+1. 将大文件的所有url按hash值分类，放入若干个小文件中，每个hash值对应一个小文件；
+2. 对于每个小文件，使用hashmap统计每种url的出现次数；
+3. 将每个小文件建立大顶堆，取得前100个出现频率最大的url，称为候选url；
+4. 使用小顶堆维护全局的前100个出现频率最大的url，初始全为0。
+5. 将每个候选url的出现次数与小顶堆中的堆顶（最小值）相比较，如果比堆顶大，就将堆顶扔掉，把这个候选url放入堆中。
+6. 最后把小顶堆中所有url按频率从大到小排好序，就是所要求的答案。
+
+### 已实现的优化
+1. 获得url时，有些url是apk文件，对其调用request.get方法会很慢，在程序中通过判断忽略掉了这类文件；
+2. 获得url时，使用多线程，显著增加执行速度；
+3. 大文件分类到小文件时，预先把所有输出流准备好，而不是每写一次都打开关闭一次流。
+4. 小顶堆只保留100个元素.
+5. 小文件的大顶堆从大到小试图插入小顶堆时，只要出现第一个插入失败，就可以直接break，因为之后肯定会更小。
+
+### 复杂度分析
+用cnt表示url总条数，blocks表示小文件个数。
+
+1. 获得url时涉及到网络通信，时间复杂度是$O(cnt) * 网络通信的平均时间$
+2. 复制url时，仅在尾部追加已有内容，时间复杂度O(cnt)，磁盘空间复杂度O(cnt)
+3. 大文件分类到小文件时，时间复杂度和磁盘空间复杂度都是O(cnt + blocks)，内存空间复杂度是O(blocks)
+4. 小文件找到100个频率最大的url时，时间复杂度是O(cnt + 100 * blocks * log (cnt/blocks))， 内存空间复杂度与每个小文件中的不同url种数成正比，hash足够平均时，是O(cnt/blocks).
+5. 找到全局100个频率最大的url时，时间复杂度是O(blocks * 100 * log 100)，空间复杂度O(100).
+
+
+### TODO
+1. 异常处理，如创建文件失败等
+2. C++考虑多线程实现
 
 ### 运行结果
 ```
@@ -154,7 +175,6 @@ total time cost = 1426.80s
 https://beautifulsoup.readthedocs.io/zh_CN/v4.4.0/#id27
 https://blog.csdn.net/xuyinxin/article/details/91304688
 https://segmentfault.com/q/1010000009200527/a-1020000009200809
-https://www.jianshu.com/p/e7d87e1ed38c
 https://docs.python.org/zh-cn/3.6/library/queue.html
 https://blog.csdn.net/Iloveyougirls/article/details/81814524
 http://www.cplusplus.com/reference/algorithm/make_heap/?kw=make_heap
