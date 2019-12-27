@@ -1,5 +1,7 @@
 # Specify filepatterns you want git to ignore.
-data/*
 src/main
+data/*
+!data/data100kb.txt
 tmp/*
 test/
+!.gitkeep
