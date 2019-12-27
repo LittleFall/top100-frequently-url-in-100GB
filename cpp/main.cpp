@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 using std::string;
 
-const string data_path = "../data_finder/data100mb.txt";
+const string data_path = "../data_finder/data100gb.txt";
 const string block_path = "../solver/block";
-const unsigned radix = 31, blocks = 131, limit = 100;
+const unsigned radix = 31, blocks = 13331, limit = 100;
 
 unsigned hash(const string &url) //获得url的hash值，范围是[0,blocks-1]
 {
@@ -22,7 +22,7 @@ std::vector<unsigned> classify_to_blocks()
 
 	string url;
 	std::vector<unsigned> block_count(blocks);
-	while(getline(fin, url))
+	while(getline(fin, url)) if(url!="")
 	{
 		unsigned hash_val = hash(url);
 		ofs[hash_val] << url << "\n";
