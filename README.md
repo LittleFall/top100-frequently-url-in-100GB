@@ -44,7 +44,7 @@
 ### 复杂度分析
 用cnt表示url总条数，blocks表示小文件个数。
 
-1. 获得url时涉及到网络通信，时间复杂度是$O(cnt) * 网络通信的平均时间$
+1. 获得url时涉及到网络通信，时间复杂度是O(cnt) * 网络通信的平均时间
 2. 复制url时，仅在尾部追加已有内容，时间复杂度O(cnt)，磁盘空间复杂度O(cnt)
 3. 大文件分类到小文件时，时间复杂度和磁盘空间复杂度都是O(cnt + blocks)，内存空间复杂度是O(blocks)
 4. 小文件找到100个频率最大的url时，时间复杂度是O(cnt + 100 * blocks * log (cnt/blocks))， 内存空间复杂度与每个小文件中的不同url种数成正比，hash足够平均时，是O(cnt/blocks).
@@ -172,9 +172,9 @@ total time cost = 1426.80s
 ```
 
 ### 参考链接
-https://beautifulsoup.readthedocs.io/zh_CN/v4.4.0/#id27
-https://blog.csdn.net/xuyinxin/article/details/91304688
-https://segmentfault.com/q/1010000009200527/a-1020000009200809
-https://docs.python.org/zh-cn/3.6/library/queue.html
-https://blog.csdn.net/Iloveyougirls/article/details/81814524
-http://www.cplusplus.com/reference/algorithm/make_heap/?kw=make_heap
+- https://beautifulsoup.readthedocs.io/zh_CN/v4.4.0/#id27
+- https://blog.csdn.net/xuyinxin/article/details/91304688
+- https://segmentfault.com/q/1010000009200527/a-1020000009200809
+- https://docs.python.org/zh-cn/3.6/library/queue.html
+- https://blog.csdn.net/Iloveyougirls/article/details/81814524
+- http://www.cplusplus.com/reference/algorithm/make_heap/?kw=make_heap
