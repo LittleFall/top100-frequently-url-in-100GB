@@ -8,6 +8,11 @@
 	- Python 3.6.9
 	- g++ 7.4.0, 编译选项：-Wall -std=c++14
 
+##### 文件限制
+我的ubuntu默认同时最多打开的文件句柄是1024，而程序中要同时用到一万多个文件句柄，导致程序会出现bug.
+
+解决方法见[Ubuntu 永久修改 ulimit -n](https://learnku.com/articles/21457)
+
 ### 目录
 - /data 存放制造好的数据
 	- /data100kb.txt 约2000条，102.7KB，用于调试

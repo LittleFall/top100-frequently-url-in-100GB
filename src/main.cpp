@@ -20,9 +20,9 @@ radix hash时的进制
 blocks 小文件个数，也是hash时的模数；为了hash尽量平均，需要选择一个质数；为了保证内存限制，可以大一些。
 limit 要筛选的出现频率最大的url个数
 */
-const string data_path = "../data/data100kb.txt";
+const string data_path = "../data/data100gb.txt";
 const string block_path = "../tmp/block";
-const unsigned radix = 31, blocks = 131, limit = 100;
+const unsigned radix = 31, blocks = 13331, limit = 100;
 
 /**
 哈希函数，获得字符串url的hash值，值域是[0,blocks-1]
@@ -44,9 +44,22 @@ unsigned hash(const string &url)
 std::vector<unsigned> classify_to_blocks()
 {
 	std::ifstream fin(data_path);
+	if(fin.fail())
+	{
+		printf("data_path error: %s\n",data_path.c_str());
+		exit(1);
+	}
 	std::vector<std::ofstream> ofs(blocks);
 	for(unsigned block_id=0; block_id<blocks; ++block_id)
-		ofs[block_id] = std::ofstream(block_path + std::to_string(block_id));
+	{
+		string block_id_path = block_path + std::to_string(block_id);
+		ofs[block_id].open(block_id_path);
+		if(ofs[block_id].fail())
+		{
+			printf("block_path error: %s\n",block_id_path.c_str() );
+			exit(1);
+		}
+	}
 
 	string url;
 	std::vector<unsigned> block_count(blocks);
@@ -57,9 +70,9 @@ std::vector<unsigned> classify_to_blocks()
 		++block_count[hash_val];
 	}
 
-	fin.clear();
+	fin.close();
 	for(unsigned block_id=0; block_id<blocks; ++block_id)
-		ofs[block_id].clear();
+		ofs[block_id].close();
 	return block_count;
 }
 
@@ -83,6 +96,12 @@ std::vector<std::pair<string, unsigned>> find_top_from_blocks()
 	for(unsigned block_id=0; block_id<blocks; ++block_id)
 	{
 		std::ifstream fin(block_path + std::to_string(block_id));
+		if(fin.fail())
+		{
+			printf("block_path error: %s\n",(block_path + std::to_string(block_id)).c_str());
+			exit(1);
+		}
+
 		string url;
 		std::unordered_map<string, unsigned> counter;
 
