@@ -135,15 +135,15 @@ int main(void)
 {
 	clock_t t_st = clock();
 
-	printf("start.\n");
-	printf("blocks = %d, hash radix = %d, find top %d\n\n", blocks, radix, limit );
+	// printf("start.\n");
+	// printf("blocks = %d, hash radix = %d, find top %d\n\n", blocks, radix, limit );
 
-	std::vector<unsigned> block_count = classify_to_blocks();
-	printf("classify end.\n");
-	printf("total urls: %u\n", std::accumulate(block_count.begin(), block_count.end(), 0u) );
-	printf("ave urls of block: %u\n", std::accumulate(block_count.begin(), block_count.end(), 0u)/blocks );
-	printf("max urls of block: %u\n", *std::max_element(block_count.begin(), block_count.end()));
-	printf("classify time cost = %.2fs\n\n",double(clock()-t_st)/CLOCKS_PER_SEC );
+	// std::vector<unsigned> block_count = classify_to_blocks();
+	// printf("classify end.\n");
+	// printf("total urls: %u\n", std::accumulate(block_count.begin(), block_count.end(), 0u) );
+	// printf("ave urls of block: %u\n", std::accumulate(block_count.begin(), block_count.end(), 0u)/blocks );
+	// printf("max urls of block: %u\n", *std::max_element(block_count.begin(), block_count.end()));
+	// printf("classify time cost = %.2fs\n\n",double(clock()-t_st)/CLOCKS_PER_SEC );
 
 	std::vector<std::pair<string, unsigned>> top = find_top_from_blocks();
 	printf("well done.\n");
