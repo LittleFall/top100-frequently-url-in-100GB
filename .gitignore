@@ -1,7 +1,18 @@
 # Specify filepatterns you want git to ignore.
-src/main
+
+# source dir, ignore target file without extension name
+src/*
+!src/*.*
+
+# data dir, ignore big data
 data/*
 !data/data100kb.txt
+
+# tmp dir, ignore any file in it
 tmp/*
+
+# test dir, ignore the whole dir
 test/
+
+# keep dir existence in github, like tmp/
 !.gitkeep
