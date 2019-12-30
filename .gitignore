@@ -4,9 +4,8 @@
 src/*
 !src/*.*
 
-# data dir, ignore big data
+# data dir, ignore data
 data/*
-!data/data100kb.txt
 
 # tmp dir, ignore any file in it
 tmp/*

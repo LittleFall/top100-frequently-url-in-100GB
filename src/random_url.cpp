@@ -55,7 +55,7 @@ int main(void)
 	freopen("../data/data100gb_rand.txt", "w", stdout);
 
 	using ll = long long;
-	ll total_byte_need = (1ll << 30) * 100; //don't use unsigned 
+	ll total_byte_need = 1ll*1000*1000*1000*100; //don't use unsigned, in ubuntu
 
 	for(; total_byte_need>0; total_byte_need -= buf_point)
 	{
