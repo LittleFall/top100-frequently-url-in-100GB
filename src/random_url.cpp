@@ -20,44 +20,71 @@ const vector<string> schemes = {
 const string alphabet = "0123456789abcdefghijklmnopqrstuv"; // no "-wxyz", len 32
 
 std::mt19937 rand_gen(time(0));
-inline string random_scheme(){return schemes[rand_gen()&3];}
-inline string random_TLD(){return TLDs[rand_gen()&31];}
 inline char random_url_char(){return alphabet[rand_gen()&31];}
 inline unsigned random_len_limit(){return (rand_gen()&7)+1;} 
 inline unsigned random_path_layer(){return (rand_gen()&3)+1;}
 
-inline string random_string()
+const unsigned buf_limit = (1<<20) * 100; //buf_size 100MB
+char buf[buf_limit + 200];
+unsigned buf_point = 0;
+
+inline void add_char(char ch)
 {
-	string str;
+	buf[buf_point++] = ch;
+}
+inline void add_random_scheme()
+{
+	for(auto ch:schemes[rand_gen()&3])
+		add_char(ch);
+}
+inline void add_random_TLD()
+{
+	for(auto ch:TLDs[rand_gen()&31])
+		add_char(ch);
+}
+inline void add_random_string()
+{
 	unsigned len = random_len_limit();
-	for(unsigned i=0; i<len; ++i)
-		str.push_back(random_url_char());
-	return str;
+	while(len--)
+		add_char(random_url_char());
 }
 
-string buf;
 int main(void)
 {
 	clock_t t_st = clock();
+	freopen("../data/data100gb_rand.txt", "w", stdout);
 
-	std::ofstream fout("../data/data100mb_rand.txt");
-	unsigned long long total_byte_last = 100*1024*1024; 
+	using ll = long long;
+	ll total_byte_need = (1ll << 20) * 100; //don't use unsigned 
 
-	while(buf.size() < total_byte_last)
+	for(; total_byte_need>0; total_byte_need -= buf_point)
 	{
-		buf += random_scheme() + "://";
-		buf += random_string() + "." + random_string() + ".";
-		buf += random_TLD();
+		ll byte_need = std::min(ll(buf_limit), total_byte_need);
 
-		unsigned path_layer = random_path_layer();
-		while(path_layer--)
-			buf += "/" + random_string();
+		std::cerr << byte_need << " ";
+		std::cerr << total_byte_need << "\n";
+		buf_point = 0;
+		while(buf_point < byte_need)
+		{
+			add_random_scheme(); add_char(':'); add_char('/'); add_char('/');
+			add_random_string(); add_char('.');
+			add_random_string(); add_char('.');
+			add_random_TLD();
 
-		buf += "\n";
+			unsigned path_layer = random_path_layer();
+			while(path_layer--)
+			{
+				add_char('/');
+				add_random_string();
+			}
+			add_char('\n');
+		}
+
+		buf[buf_point] = 0;
+		printf("%s", buf);
 	}
-	fout << buf << "\n";      
+	fprintf(stderr, "%.2fs\n", double(clock()-t_st)/CLOCKS_PER_SEC );
 
-	printf("%.2fs\n",double(clock()-t_st)/CLOCKS_PER_SEC );
 
 	return 0;
 }
