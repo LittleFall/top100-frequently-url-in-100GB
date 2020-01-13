@@ -52,10 +52,10 @@ inline void add_random_string()
 int main(void)
 {
 	clock_t t_st = clock();
-	freopen("../data/data100gb_rand.txt", "w", stdout);
+	freopen("../data/data10gb_rand.txt", "w", stdout);
 
 	using ll = long long;
-	ll total_byte_need = 1ll*1000*1000*1000*100; //don't use unsigned, in ubuntu
+	ll total_byte_need = 1ll*1000*1000*1000*10; //don't use unsigned, in ubuntu
 
 	for(; total_byte_need>0; total_byte_need -= buf_point)
 	{
